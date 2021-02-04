@@ -1,17 +1,45 @@
 #include <string>
 #include "Component.hpp"
 
+// Default constructor, type of the Component needed (div, tag, code...)
 Component::Component(std::string type){
     this->type=type;
 }
 
-std::string Component::render(){
-    std::string tmp = "<" + this->type + ">";
+// Overloaded constructor to include text before any of the components
+Component::Component(std::string type, std::string text){
+    this->type=type;
+    this->content = {text};
+}
 
-    for(Component c: this->children)
-        tmp += c.render();
+// Add subcomponents
+void Component::addChild(Component newChild){
+    this->children.push_back(newChild); // Add the new component to the end
+}
+
+// Sets the text contained in this component. It is placed after the last added component
+void Component::setText(std::string text){
+    if(this->children.size() == 0)      // If no components were added before, 
+        this->content = {text};         // just set the text (keep the reference NULL, the default)
+    else                                // Otherwise,
+        this->content = {text, &this->children.back()}; // set the reference to the last component added
+}
+
+std::string Component::render(){
+    std::string tmp = "<" + this->type + ">";   // Open the tag
+
+    if(this->content.after == NULL)     // If the text's "after" is NULL, it means that the text should be rendered first
+        tmp += this->content.text;
+
+    for(Component c: this->children){   // For each subcomponent,
+        tmp += c.render();              // render it
+
+        if(this->content.after == &c){  // and then check if the text goes after it
+            tmp += this->content.text;  // (if it does, render the text)
+        }
+    }
     
-    tmp += "</" + this->type + ">";
+    tmp += "</" + this->type + ">";     // And close the tag
 
     return tmp;
 }
