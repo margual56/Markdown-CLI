@@ -67,18 +67,15 @@ int main(int argc, char **argv) {
         exit(2);
     }
 
-    HTML output = HTML();
-    output.addChild(Component("p", "This is a test"));
-
     if(inputFile.empty()){
-        printf("Input: stdin\n");
+        printf("Input: stdin\nPress Ctrl+D (or Ctrl+Z on Windows) to end.\n");
 
         // Read from stdin and load it into a variable
         std::string line;
         do{
             std::getline(std::cin, line);
             stdinMarkdown += line + "\n";
-        }while(!line.empty());
+        }while(!std::cin.eof());
     }else{
         std::ifstream inputStream(inputFile);
 
@@ -99,7 +96,10 @@ int main(int argc, char **argv) {
         printf("Input: %s\n", inputFile.c_str());
     }
 
-    printf("%s\n", stdinMarkdown.c_str());
+    //printf("%s\n", stdinMarkdown.c_str());
+
+    HTML *output = markdown(stdinMarkdown);
+    output->addChild(new Component("p", "This is a test"));
 
     if(!styleFile.empty()){
         printf("Style: %s\n", styleFile.c_str());
@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
 
         std::ofstream outputStream (outputFile);
         if(outputStream.is_open()){
-            outputStream << output.render();
+            outputStream << output->render();
             outputStream.close();
         }else{
             printf("%s\n", outputFile.c_str());
@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
     }else{
         printf("Output: stdout\n");
 
-        printf("\n%s\n", output.render().c_str());
+        printf("\n%s\n", output->render().c_str());
     }
 
 
