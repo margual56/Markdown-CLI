@@ -8,18 +8,16 @@
 
 #include "markdown.hpp" // Markdown parser
 
-/* Flag set by ‘--verbose’. */
-static int verbose_flag;
 
 int main(int argc, char **argv) {
     int c;
     std::string styleFile, inputFile, outputFile, stdinMarkdown;
+    bool verbose_flag;
 
     while (1) {
         static struct option long_options[] = {
             /* These options set a flag. */
-            {"verbose", no_argument, &verbose_flag, 1},
-            {"brief", no_argument, &verbose_flag, 0},
+            {"verbose", no_argument, 0, 'v'},
             {"help", no_argument, 0, 'h'},
             {"style", required_argument, 0, 's'},
             {"input", required_argument, 0, 'i'}
@@ -27,13 +25,17 @@ int main(int argc, char **argv) {
         /* getopt_long stores the option index here. */
         int option_index = 0;
 
-        c = getopt_long(argc, argv, "hs:i:", long_options, &option_index);
+        c = getopt_long(argc, argv, "vhs:i:", long_options, &option_index);
 
         /* Detect the end of the options. */
         if (c == -1)
             break;
 
         switch (c) {
+            case 'v':
+                verbose_flag = true;
+            break;
+
             case 'h':
                 printf("Gotta show the man page (or the help)");
                 exit(0);
@@ -60,7 +62,7 @@ int main(int argc, char **argv) {
     and ‘--brief’ as they are encountered,
     we report the final status resulting from them. */
     if (verbose_flag)
-        puts("verbose flag is set");
+        puts("Verbose flag is set");
 
     if (optind+1 < argc) {
         perror("Too many arguments\n");
@@ -93,7 +95,8 @@ int main(int argc, char **argv) {
             exit(3);
         }
 
-        printf("Input: %s\n", inputFile.c_str());
+        if(verbose_flag)
+            printf("Input: %s\n", inputFile.c_str());
     }
 
     //printf("%s\n", stdinMarkdown.c_str());
@@ -101,13 +104,14 @@ int main(int argc, char **argv) {
     HTML *output = markdown(stdinMarkdown);
     output->addChild(new Component("p", "This is a test"));
 
-    if(!styleFile.empty()){
+    if(!styleFile.empty() && verbose_flag){
         printf("Style: %s\n", styleFile.c_str());
     }
 
     if(optind < argc){
         outputFile = std::string(argv[optind]);
-        printf("Output: %s\n", outputFile.c_str());
+        if(verbose_flag)
+            printf("Output: %s\n", outputFile.c_str());
 
         std::ofstream outputStream (outputFile);
         if(outputStream.is_open()){
@@ -119,9 +123,10 @@ int main(int argc, char **argv) {
             exit(3);
         }
     }else{
-        printf("Output: stdout\n");
+        if(verbose_flag)
+            printf("Output: stdout\n\n");
 
-        printf("\n%s\n", output->render().c_str());
+        printf("%s\n", output->render().c_str());
     }
 
 
