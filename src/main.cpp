@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstring>
 #include <getopt.h>     // GNU's getopt (parse CL arguments)
 #include <stdio.h>      // Standard I/O
@@ -34,6 +35,7 @@ int main(int argc, char **argv) {
         switch (c) {
             case 'h':
                 printf("Gotta show the man page (or the help)");
+                exit(0);
             break;
 
             case 's':
@@ -60,11 +62,13 @@ int main(int argc, char **argv) {
         puts("verbose flag is set");
 
     if (optind+1 < argc) {
-        perror("Too many arguments");
+        perror("Too many arguments\n");
         exit(2);
     }
 
-    HTML output;
+    HTML output = HTML();
+    output.addChild(Component("p", "This is a test"));
+
     if(!inputFile.empty()){
         printf("Input: %s\n", inputFile.c_str());
     }else{
@@ -77,12 +81,22 @@ int main(int argc, char **argv) {
 
     //output = markdownFile(outputFile, nullptr);
     if(optind < argc){
-        outputFile = argv[optind++];
+        outputFile = std::string(argv[optind]);
         printf("Output: %s\n", outputFile.c_str());
 
-        //std::fstream outputFile(argv[optind++], std::ios::in);
+        std::ofstream outputStream (outputFile);
+        if(outputStream.is_open()){
+            outputStream << output.render();
+            outputStream.close();
+        }else{
+            printf("%s\n", outputFile.c_str());
+            perror("Unable to open the output file");
+            exit(3);
+        }
     }else{
         printf("Output: stdout\n");
+
+        printf("\n%s\n", output.render().c_str());
     }
 
 
