@@ -2,6 +2,7 @@
 ![GitHub issues](https://img.shields.io/github/issues/margual56/Markdown-CLI?style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/margual56/Markdown-CLI?style=for-the-badge)
 ![GitHub followers](https://img.shields.io/github/followers/margual56?style=for-the-badge)
+![GitHub contributors](https://img.shields.io/github/contributors/margual56/Markdown-CLI?style=for-the-badge)
 
 A markdown CLI renderer in C++ <br/>
 
