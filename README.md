@@ -21,3 +21,14 @@ Command | Description
 
 ## Manual
 The goal is to have here a wiki, implement the manual page and add it to the [tldr pages](https://github.com/tldr-pages/tldr).
+
+## Contributing
+First of all, thank you for giving us part of your time!<br/>
+You can contribute by:
+* [Reporting a bug](https://github.com/margual56/Markdown-CLI/issues/new?assignees=margual56&labels=bug&template=bug_report.md&title=%5BBUG%5D+-+short+description+of+problem)
+* [Suggesting a new feature](https://github.com/margual56/Markdown-CLI/issues/new?assignees=margual56&labels=enhancement&template=feature_request.md&title=%5BFEATURE%5D+-+short+description+of+the+feature+or+request)
+* Completing the documentation or the wiki
+* Fork this project and contribute!
+
+Also, check out [the license](https://github.com/margual56/Markdown-CLI/blob/main/docs/LICENSE) and the [code of conduct](https://github.com/margual56/Markdown-CLI/blob/main/docs/CODE_OF_CONDUCT.md)
+
