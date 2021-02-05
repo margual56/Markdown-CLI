@@ -79,8 +79,6 @@ int main(int argc, char **argv) {
             std::getline(std::cin, line);
             stdinMarkdown += line + "\n";
         }while(!line.empty());
-
-        printf("%s\n", stdinMarkdown.c_str());
     }else{
         std::ifstream inputStream(inputFile);
 
@@ -89,7 +87,7 @@ int main(int argc, char **argv) {
             do{
                 std::getline(inputStream, line);
                 stdinMarkdown += line + "\n";
-            }while(!line.empty());
+            }while(!inputStream.eof());
 
             inputStream.close();
         }else{
