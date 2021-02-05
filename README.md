@@ -1,4 +1,8 @@
 # Markdown-CLI
+[![GitHub issues](https://img.shields.io/github/issues/SantiMA10/CampusVirtualPlus.svg)](https://github.com/margual56/Markdown-CLI/issues)
+[![GitHub forks](https://img.shields.io/github/forks/SantiMA10/CampusVirtualPlus.svg)](https://github.com/margual56/Markdown-CLI/network)
+[![GitHub stars](https://img.shields.io/github/stars/SantiMA10/CampusVirtualPlus.svg)](https://github.com/margual56/Markdown-CLI/stargazers)
+
 A markdown CLI renderer in C++ <br/>
 
 (Still in development)
