@@ -68,14 +68,14 @@ int main(int argc, char **argv) {
     }
 
     if(inputFile.empty()){
-        printf("Input: stdin\n");
+        printf("Input: stdin\nPress Ctrl+D (or Ctrl+Z on Windows) to end.\n");
 
         // Read from stdin and load it into a variable
         std::string line;
         do{
             std::getline(std::cin, line);
             stdinMarkdown += line + "\n";
-        }while(!line.empty());
+        }while(!std::cin.eof());
     }else{
         std::ifstream inputStream(inputFile);
 
