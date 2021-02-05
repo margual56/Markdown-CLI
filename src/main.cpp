@@ -2,6 +2,7 @@
 #include <cstring>
 #include <getopt.h>     // GNU's getopt (parse CL arguments)
 #include <stdio.h>      // Standard I/O
+#include <iostream>     // For the std::cin and std::cout. I don't like, but... oh well
 #include <string>       // Use strings
 #include <fstream>      // Create, write and read files
 
@@ -12,7 +13,7 @@ static int verbose_flag;
 
 int main(int argc, char **argv) {
     int c;
-    std::string styleFile, inputFile, outputFile;
+    std::string styleFile, inputFile, outputFile, stdinMarkdown;
 
     while (1) {
         static struct option long_options[] = {
@@ -69,17 +70,43 @@ int main(int argc, char **argv) {
     HTML output = HTML();
     output.addChild(Component("p", "This is a test"));
 
-    if(!inputFile.empty()){
-        printf("Input: %s\n", inputFile.c_str());
-    }else{
+    if(inputFile.empty()){
         printf("Input: stdin\n");
+
+        // Read from stdin and load it into a variable
+        std::string line;
+        do{
+            std::getline(std::cin, line);
+            stdinMarkdown += line + "\n";
+        }while(!line.empty());
+
+        printf("%s\n", stdinMarkdown.c_str());
+    }else{
+        std::ifstream inputStream(inputFile);
+
+        if(inputStream.is_open()){
+            std::string line;
+            do{
+                std::getline(inputStream, line);
+                stdinMarkdown += line + "\n";
+            }while(!line.empty());
+
+            inputStream.close();
+        }else{
+            printf("%s\n", outputFile.c_str());
+            perror("Unable to open the output file");
+            exit(3);
+        }
+
+        printf("Input: %s\n", inputFile.c_str());
     }
+
+    printf("%s\n", stdinMarkdown.c_str());
 
     if(!styleFile.empty()){
         printf("Style: %s\n", styleFile.c_str());
     }
 
-    //output = markdownFile(outputFile, nullptr);
     if(optind < argc){
         outputFile = std::string(argv[optind]);
         printf("Output: %s\n", outputFile.c_str());
