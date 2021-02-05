@@ -1,7 +1,7 @@
 # Markdown-CLI
-[![GitHub issues](https://img.shields.io/github/issues/SantiMA10/CampusVirtualPlus.svg)](https://github.com/margual56/Markdown-CLI/issues)
-[![GitHub forks](https://img.shields.io/github/forks/SantiMA10/CampusVirtualPlus.svg)](https://github.com/margual56/Markdown-CLI/network)
-[![GitHub stars](https://img.shields.io/github/stars/SantiMA10/CampusVirtualPlus.svg)](https://github.com/margual56/Markdown-CLI/stargazers)
+![GitHub issues](https://img.shields.io/github/issues/margual56/Markdown-CLI?style=for-the-badge)
+![GitHub](https://img.shields.io/github/license/margual56/Markdown-CLI?style=for-the-badge)
+![GitHub followers](https://img.shields.io/github/followers/margual56?style=for-the-badge)
 
 A markdown CLI renderer in C++ <br/>
 
