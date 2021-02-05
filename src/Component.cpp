@@ -26,20 +26,20 @@ void Component::setText(std::string text){
 }
 
 std::string Component::render(){
-    std::string tmp = "<" + this->type + ">";   // Open the tag
+    std::string tmp = "<" + this->type + ">\n";   // Open the tag
 
-    if(this->content.after == NULL)     // If the text's "after" is NULL, it means that the text should be rendered first
-        tmp += this->content.text;
+    if(this->content.after == NULL && !this->content.text.empty())     // If the text's "after" is NULL, it means that the text should be rendered first
+        tmp += this->content.text + "\n";
 
     for(Component c: this->children){   // For each subcomponent,
-        tmp += c.render();              // render it
+        tmp += c.render() + "\n";              // render it
 
         if(this->content.after == &c){  // and then check if the text goes after it
-            tmp += this->content.text;  // (if it does, render the text)
+            tmp += this->content.text + "\n";  // (if it does, render the text)
         }
     }
     
-    tmp += "</" + this->type + ">";     // And close the tag
+    tmp += "</" + this->type + ">\n";     // And close the tag
 
     return tmp;
 }
