@@ -102,7 +102,6 @@ int main(int argc, char **argv) {
     //printf("%s\n", stdinMarkdown.c_str());
 
     HTML *output = markdown(stdinMarkdown);
-    output->addChild(new Component("p", "This is a test"));
 
     if(!styleFile.empty() && verbose_flag){
         printf("Style: %s\n", styleFile.c_str());
