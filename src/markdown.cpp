@@ -3,13 +3,18 @@
 #include <string>       // Use strings
 #include <fstream>      // Create, write and read files
 #include <iostream>     // For the std::cin and std::cout. I don't like, but... oh well
-#include <regex>        // Obviously, required to do regex on the lines
+#include <regex>        // Unlocks REGEX POWAA
 #include <utility>
 
 #include "HTML.hpp"
 
+struct token {
+    std::regex rex;     // Regex to find the markdown token
+    std::string tag;    // Equivalent tag
+};
+
 void markdown(std::string markdown, HTML *out){
-    std::string line;
+    /*std::string line;
     std::stringstream input(markdown);
 
     while(std::getline(input, line, '\n')){        
@@ -22,36 +27,37 @@ void markdown(std::string markdown, HTML *out){
             line.erase(0, i);                   // Then delete them
             out->addChild(new Component("h" + std::to_string(i), line)); // and set the "title" level to the number of '#' there was
             out->addChild(new Component("hr")); // Plus, add a separator below the title
-        }else{
-            std::regex words_regex("`[^`]+`");
-            auto words_begin = std::sregex_iterator(line.begin(), line.end(), words_regex);
-            auto words_end   = std::sregex_iterator();
-        
-            Component *paragraph = new Component("p");
-            int match_end = -1, match_begin;
-            for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
-                std::smatch match = *i;
-
-                match_begin = match.position();
-
-                if(match_end +1 < match_begin -1)
-                    paragraph->addChild(new Component("", line.substr(match_end +1, match_begin -1)));
-
-                match_end   = match_begin + match.length()-1;
-
-                // std::cout << line.substr(match_begin+1, match_end-1) << std::endl; // Debug, print all the code matches
-                if(match_begin +1 < match_end -1)
-                    paragraph->addChild(new Component("code", line.substr(match_begin+1, match_end-1)));
-            }
-            if(match_end +1 < line.length() -1)
-                paragraph->setText(line.substr(match_end +1, line.length() -1));
-
-            std::cout << paragraph->render() << std::endl;
-
-            out->addChild(paragraph);
         }
+    }*/
+    
+    printf("Wtf is happeninggg");
 
+    std::list<token> tokens = {
+        token{std::regex("`[^`]+`"),    "code"},   // Code tag regex
+        token{std::regex("*[^*]+*"),    "i"},      // Italic tag regex
+        token{std::regex("**[^**]+**"), "b"},      // Bold tag regex
+        token{std::regex(">[^\n]+\n\n"),"quote"}   // Block quote
+    };
+    for(token tok: tokens){
+        printf("Checking for %s\n", tok.tag.c_str());
+
+        auto words_begin = std::sregex_iterator(markdown.begin(), markdown.end(), tok.rex);
+        auto words_end   = std::sregex_iterator();
+
+        int match_end, match_begin;
+        for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
+            std::smatch match = *i;
+
+            match_begin = match.position();
+            match_end   = match_begin + match.length()-1;
+
+            markdown.replace(match_begin, 1, "<" + tok.tag + ">");
+            markdown.replace(match_end, 1, "</" + tok.tag + ">");
+            // std::cout << line.substr(match_begin+1, match_end-1) << std::endl; // Debug, print all the code matches
+        }
     }
+
+    out = new HTML(markdown);
 }
 
 //Read from a file, return a HTML object

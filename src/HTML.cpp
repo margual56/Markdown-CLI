@@ -5,6 +5,7 @@
 HTML::HTML():Component("html"){
     // Add the head and the body to the list of components
     this->head = new Component("head");
+    this->head->setText("<link rel=\"stylesheet\" href=\"default.css\">");
     this->children.push_back(this->head);
 
     this->body = new Component("body");
@@ -17,6 +18,7 @@ HTML::HTML(std::string cssFilePath):Component("html"){
 
     // Add the head and the body to the list of components
     this->head = new Component("head");
+    this->head->setText("<link rel=\"stylesheet\" href=\"default.css\">");
     this->children.push_back(this->head);
 
     this->body = new Component("body");
