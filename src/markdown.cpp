@@ -11,65 +11,60 @@
 
 struct token {
     std::string rex;    // Regex to find the markdown token
-    int length;         // Length of the token ("**" = 2, "*" = 1)
+    int length1;        // Length of the first token ("**" = 2, "*" = 1)
+    int length2;        // Length of the last token (quotes only have at the beginning, newlines at the end, etc)
     std::string tag;    // Equivalent tag
-
 };
 
-void markdown(std::string *markdown){
+std::string markdown(std::string markdown){
+    std::smatch match;  // Match object (stores match information)
 
     ////////////////////////////// HEADERS //////////////////////////////////////
-    std::regex headers("^#+[^\\n]*\\n");
-    auto header_begin = std::sregex_iterator(markdown->begin(), markdown->end(), headers);
-    auto header_end   = std::sregex_iterator();
-    
-    int match_end, match_begin;
-    for (std::sregex_iterator i = header_begin; i != header_end; ++i) {
-        std::smatch match = *i;
+    std::regex headers("#+[^\\r\\n]+(\\r|\\n|\\r\\n)"); // Regex for the headers
 
-        match_begin = match.position();
-        match_end   = match_begin + match.length();
+    while (std::regex_search (markdown, match, headers)) {
 
+        int match_begin = match.position();
+        int match_end   = match_begin + match.length();
+
+        printf("Processing match: %s", markdown.substr(match_begin, match.length()).c_str());
 
         int j;
-        for(j = 1; markdown->at(j+match_begin-1)=='#'; j++){}     // So count the number of '#' in a row,
+        for(j = 0; markdown[j+match_begin]=='#'; j++){}     // So count the number of '#' in a row,
 
-        printf("Processing match: %s\n", markdown->substr(match_begin, match.length()).c_str());
 
-        markdown->insert(match_end, "</h" + std::to_string(j) + ">");
-        markdown->replace(match_begin, j, "<h" + std::to_string(j) + ">");
+        markdown.insert(match_end, "</h" + std::to_string(j) + "><hr/>");
+        markdown.replace(match_begin, j, "<h" + std::to_string(j) + ">");
     }
 
     ////////////////////////// OTHER TOKENS ////////////////////////////////////
+    //token{"[^\\r\\n]+((\\r|\\n|\\r\\n)[^\\r\\n]+)*",0,2,  "p"}       // Paragraphs regex
+
     std::list<token> tokens = {
-        token{"`[^`\\n]+`",                         1,  "code"},   // Code tag regex
-        token{"(\\*){2}[^(\\*){2}\\n]+(\\*){2}",    2,  "b"},      // Bold tag regex    (**)
-        token{"(_){2}[^(_){2}\\n]+(_){2}",          2,  "b"},      // Bold tag regex    (__)
-        token{"\\*[^\\*\\n]+\\*",                   1,  "i"},      // Italic tag regex  (*)
-        token{"_[^\\*\\n]+_",                       1,  "i"}       // Italic tag regex  (_)
-        //token{"^>[^\\n]+\\n\\n","quote"}   // Block quote
+        token{"`[^`\\n]+`",                             1,1,  "code"},   // Code tag regex
+        token{"(\\*){2}[^(\\*){2}\\r\\n]+(\\*){2}",     2,2,  "b"},      // Bold tag regex    (**)
+        token{"(_){2}[^(_){2}\\r\\n]+(_){2}",           2,2,  "b"},      // Bold tag regex    (__)
+        token{"\\*[^\\*\\r\\n]+\\*",                    1,1,  "i"},      // Italic tag regex  (*)
+        token{"_[^\\*\\r\\n]+_",                        1,1,  "i"},      // Italic tag regex  (_)
+        token{"> [^\\r\\n]+(\\r|\\n|\\r\\n){2}",        2,0,  "quote"}   // Block quote
     };
 
     for(token tok: tokens){
         printf("Checking for %s\n", tok.tag.c_str());
         std::regex tmp(tok.rex);
-        auto words_begin = std::sregex_iterator(markdown->begin(), markdown->end(), tmp);
-        auto words_end   = std::sregex_iterator();
         
         int match_end, match_begin;
-        for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
-            std::smatch match = *i;
-
+        while (std::regex_search (markdown, match, tmp)) {
             match_begin = match.position();
             match_end   = match_begin + match.length();
 
-            printf("Processing match: %s\n", markdown->substr(match_begin, match.length()-tok.length).c_str());
+            printf("Processing match: %s\n", markdown.substr(match_begin, match.length()).c_str());
 
             //printf("Replacing '%s' by '%s'\n", markdown->substr(match_end, tok.length).c_str(), ("</" + tok.tag + ">").c_str());
-            markdown->replace(match_end-tok.length, tok.length, "</" + tok.tag + ">");
+            markdown.replace(match_end-tok.length2, tok.length2, "</" + tok.tag + ">");
 
             //printf("Replacing '%s' by '%s'\n", markdown->substr(match_begin, tok.length).c_str(), ("<" + tok.tag + ">").c_str());
-            markdown->replace(match_begin, tok.length, "<" + tok.tag + ">");
+            markdown.replace(match_begin, tok.length1, "<" + tok.tag + ">");
 
 
             // std::cout << line.substr(match_begin+1, match_end-1) << std::endl; // Debug, print all the code matches
@@ -79,27 +74,11 @@ void markdown(std::string *markdown){
     }
 
     ////////////////////////////// LINE BREAKS ///////////////////////////////////
-    for(int i = 0; i<markdown->length(); i++){
-        if(markdown->at(i) == '\n'){
-            markdown->replace(i, 1, "<br/>");
+    for(int i = 0; i<markdown.length(); i++){
+        if(markdown[i] == '\n'){
+            markdown.replace(i, 1, "<br/>");
         }
     }
-}
 
-//Read from a file, return a HTML object
-HTML* markdown(std::string markdownInput){
-    markdown(&markdownInput);
-
-    HTML *out = new HTML(markdownInput);
-
-    return out;
-}
-
-//Read from a file, return a HTML object with style applied
-HTML* markdown(std::string markdownInput, std::string stylePath){
-    markdown(&markdownInput);
-
-    HTML *out = new HTML(markdownInput, stylePath);
-
-    return out;
+    return markdown;
 }

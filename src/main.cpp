@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
 
     //printf("%s\n", stdinMarkdown.c_str());
 
-    HTML *output = markdown(stdinMarkdown);
+    HTML *output = new HTML(markdown(stdinMarkdown));
 
     if(!styleFile.empty() && verbose_flag){
         printf("Style: %s\n", styleFile.c_str());

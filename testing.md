@@ -4,16 +4,19 @@
 [![GitHub followers](https://img.shields.io/github/followers/margual56?style=for-the-badge)](https://github.com/margual56?tab=followers)
 [![GitHub contributors](https://img.shields.io/github/contributors/margual56/Markdown-CLI?style=for-the-badge)](https://github.com/margual56/Markdown-CLI/graphs/contributors)
 
-A markdown CLI renderer in C++ <br/>
+A markdown CLI renderer in C++
 
 (Still in development)
 
-*this is italic* and _this is also italic_
+*this is italic* and _this is also italic_, while this is not
 _this is italic_
 **this is bold**
 __this is bold__
 
 `this is code`
+
+> And this is a quote
+From my friend inoricat
 
 
 ## Goal
