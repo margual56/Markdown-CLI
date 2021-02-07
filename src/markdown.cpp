@@ -17,29 +17,34 @@ struct token {
 };
 
 void markdown(std::string markdown, HTML *out){
-    /*std::string line;
-    std::stringstream input(markdown);
 
-    while(std::getline(input, line, '\n')){        
-        char const tmp = line[0];
-        
-        if(line[0] == '#'){                     // If the line starts with a '#', then it is a title (or subtitle, subsubtitle, etc)
-            int i;
-            for(i = 1; line[i]=='#'; i++){}     // So count the number of '#' in a row,
+    ////////////////////////////// HEADERS //////////////////////////////////////
+    std::regex headers("^#+[^\\n]*\\n");
+    auto header_begin = std::sregex_iterator(markdown.begin(), markdown.end(), headers);
+    auto header_end   = std::sregex_iterator();
+    
+    int match_end, match_begin;
+    for (std::sregex_iterator i = header_begin; i != header_end; ++i) {
+        std::smatch match = *i;
 
-            line.erase(0, i);                   // Then delete them
-            out->addChild(new Component("h" + std::to_string(i), line)); // and set the "title" level to the number of '#' there was
-            out->addChild(new Component("hr")); // Plus, add a separator below the title
-        }
-    }*/
+        match_begin = match.position();
+        match_end   = match_begin + match.length();
 
+        int j;
+        for(j = 1; markdown[j+match_begin-1]=='#'; j++){}     // So count the number of '#' in a row,
+
+        markdown.replace(match_begin, j, "<h" + std::to_string(j) + ">");
+        markdown.insert(match_end, "</h" + std::to_string(j) + ">");
+    }
+
+    ////////////////////////// OTHER TOKENS ////////////////////////////////////
     std::list<token> tokens = {
         token{"`[^`\\n]+`",                 1,  "code"},   // Code tag regex
         token{"(\\*){2}[^(\\*){2}\\n]+(\\*){2}",2,  "b"},      // Bold tag regex    (**)
         token{"(_){2}[^(_){2}\\n]+(_){2}",        2,  "b"},      // Bold tag regex    (__)
         token{"\\*[^\\*\\n]+\\*",           1,  "i"},      // Italic tag regex  (*)
         token{"_[^\\*\\n]+_",               1,  "i"}       // Italic tag regex  (_)
-        //token{">[^\\n]+\\n\\n","quote"}   // Block quote
+        //token{"^>[^\\n]+\\n\\n","quote"}   // Block quote
     };
 
     for(token tok: tokens){
@@ -70,6 +75,7 @@ void markdown(std::string markdown, HTML *out){
         printf("Done checking %s\n", tok.tag.c_str());
     }
 
+    ////////////////////////////// LINE BREAKS ///////////////////////////////////
     for(int i = 0; i<markdown.length(); i++){
         if(markdown[i] == '\n'){
             markdown.replace(i, 1, "<br/>");
