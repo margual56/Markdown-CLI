@@ -8,7 +8,7 @@ A markdown CLI renderer in C++ <br/>
 
 (Still in development)
 
-*this is italic*
+*this is italic* and _this is also italic_
 _this is italic_
 **this is bold**
 __this is bold__

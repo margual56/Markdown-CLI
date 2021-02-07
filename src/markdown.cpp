@@ -30,20 +30,23 @@ void markdown(std::string *markdown){
         match_begin = match.position();
         match_end   = match_begin + match.length();
 
+
         int j;
         for(j = 1; markdown->at(j+match_begin-1)=='#'; j++){}     // So count the number of '#' in a row,
 
-        markdown->replace(match_begin, j, "<h" + std::to_string(j) + ">");
+        printf("Processing match: %s\n", markdown->substr(match_begin, match.length()).c_str());
+
         markdown->insert(match_end, "</h" + std::to_string(j) + ">");
+        markdown->replace(match_begin, j, "<h" + std::to_string(j) + ">");
     }
 
     ////////////////////////// OTHER TOKENS ////////////////////////////////////
     std::list<token> tokens = {
-        token{"`[^`\\n]+`",                 1,  "code"},   // Code tag regex
-        token{"(\\*){2}[^(\\*){2}\\n]+(\\*){2}",2,  "b"},      // Bold tag regex    (**)
-        token{"(_){2}[^(_){2}\\n]+(_){2}",        2,  "b"},      // Bold tag regex    (__)
-        token{"\\*[^\\*\\n]+\\*",           1,  "i"},      // Italic tag regex  (*)
-        token{"_[^\\*\\n]+_",               1,  "i"}       // Italic tag regex  (_)
+        token{"`[^`\\n]+`",                         1,  "code"},   // Code tag regex
+        token{"(\\*){2}[^(\\*){2}\\n]+(\\*){2}",    2,  "b"},      // Bold tag regex    (**)
+        token{"(_){2}[^(_){2}\\n]+(_){2}",          2,  "b"},      // Bold tag regex    (__)
+        token{"\\*[^\\*\\n]+\\*",                   1,  "i"},      // Italic tag regex  (*)
+        token{"_[^\\*\\n]+_",                       1,  "i"}       // Italic tag regex  (_)
         //token{"^>[^\\n]+\\n\\n","quote"}   // Block quote
     };
 
@@ -60,13 +63,13 @@ void markdown(std::string *markdown){
             match_begin = match.position();
             match_end   = match_begin + match.length();
 
-            //printf("Processing match: %i, %i\n", match_begin, match_end);
+            printf("Processing match: %s\n", markdown->substr(match_begin, match.length()-tok.length).c_str());
 
-            printf("Replacing '%s' by '%s'\n", markdown->substr(match_begin, tok.length).c_str(), ("<" + tok.tag + ">").c_str());
+            //printf("Replacing '%s' by '%s'\n", markdown->substr(match_end, tok.length).c_str(), ("</" + tok.tag + ">").c_str());
+            markdown->replace(match_end-tok.length, tok.length, "</" + tok.tag + ">");
+
+            //printf("Replacing '%s' by '%s'\n", markdown->substr(match_begin, tok.length).c_str(), ("<" + tok.tag + ">").c_str());
             markdown->replace(match_begin, tok.length, "<" + tok.tag + ">");
-
-            printf("Replacing '%s' by '%s'\n", markdown->substr(match_end+tok.length, tok.length).c_str(), ("</" + tok.tag + ">").c_str());
-            markdown->replace(match_end+tok.length, tok.length, "</" + tok.tag + ">");
 
 
             // std::cout << line.substr(match_begin+1, match_end-1) << std::endl; // Debug, print all the code matches

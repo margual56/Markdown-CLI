@@ -16,12 +16,12 @@ int main(int argc, char **argv) {
 
     while (1) {
         static struct option long_options[] = {
-            /* These options set a flag. */
-            {"verbose", no_argument, 0, 'v'},
-            {"help", no_argument, 0, 'h'},
-            {"style", required_argument, 0, 's'},
-            {"input", required_argument, 0, 'i'}
+            {"verbose",     no_argument,        0, 'v'},
+            {"help",        no_argument,        0, 'h'},
+            {"style",       required_argument,  0, 's'},
+            {"input",       required_argument,  0, 'i'}
         };
+
         /* getopt_long stores the option index here. */
         int option_index = 0;
 
@@ -49,18 +49,11 @@ int main(int argc, char **argv) {
                 inputFile = optarg;
             break;
 
-            case '?':
-                /* getopt_long already printed an error message. */
-            break;
-
             default:
                 abort();
         }
     }
 
-    /* Instead of reporting ‘--verbose’
-    and ‘--brief’ as they are encountered,
-    we report the final status resulting from them. */
     if (verbose_flag)
         puts("Verbose flag is set");
 

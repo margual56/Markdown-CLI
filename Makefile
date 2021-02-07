@@ -11,7 +11,7 @@ prepare:
 	mkdir -p $(XDG_CONFIG_HOME)/markdown-cli/
 
 install:
-	curl https://gist.githubusercontent.com/tuzz/3331384/raw/fc0160dd7ea0b4a861533c4d6c232f56291796a3/github.css > default.css
+	curl https://gist.githubusercontent.com/moalex/c5211cd7869944d37260/raw/5353d71bdd6140d311c1ac04cd0a1a59e601778e/clearness-dark.markdown.css > default.css
 
 debug: src/*
 	$(CC) src/*.cpp $(flags) -o bin/MarkdownCLI
