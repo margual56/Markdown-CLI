@@ -6,7 +6,7 @@
 
 A markdown CLI renderer in C++ <br/>
 
-(Still in development)
+(Still in development, [check out this project board](https://github.com/margual56/Markdown-CLI/projects/1) to know what we are up to!)
 
 ## Goal
 Simple syntax, concise commands and versatile while _trying_ to be suckless.
