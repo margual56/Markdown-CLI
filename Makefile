@@ -1,5 +1,5 @@
 CC=g++			# Compiler of choice
-flags=-DDEBUG	# Flags
+flags=			# Flags
 
 all: clean prepare install debug
 
@@ -13,5 +13,5 @@ prepare:
 install:
 	curl https://gist.githubusercontent.com/moalex/c5211cd7869944d37260/raw/5353d71bdd6140d311c1ac04cd0a1a59e601778e/clearness-dark.markdown.css > default.css
 
-debug: src/*
+build: src/*
 	$(CC) src/*.cpp $(flags) -o bin/MarkdownCLI
