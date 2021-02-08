@@ -36,6 +36,44 @@ std::string markdown(std::string markdown){
         markdown.insert(match_end, "</h" + std::to_string(j) + "><hr/>");
         markdown.replace(match_begin, j, "<h" + std::to_string(j) + ">");
     }
+    
+    //////////////////////////////// LINKS //////////////////////////////////////
+    std::regex links("\\[[^\\n\\r]*\\]\\([^\\n\\r]*\\)"); // Regex for the headers
+    std::regex linkHref("\\([^\\n\\r]*\\)");
+
+    std::smatch match2;  // Match object (stores match information)
+    while (std::regex_search (markdown, match, links)) {
+
+        int match_begin = match.position();
+        int match_end   = match_begin + match.length();
+        
+        std::string text = "";
+        std::string link = "";
+
+        int i, count;
+        for(i = match_begin+1, count = 1; count > 0; i++){
+            char c = markdown[i];
+
+            if(c == '[') count++;
+            else if(c == ']') count--;
+
+            if(count > 0) text += c;
+        }
+
+        for(i += 1, count = 1; count > 0; i++){
+            char c = markdown[i];
+
+            if(c == '(') count++;
+            else if(c == ')') count--;
+
+            if(count > 0) link += c;
+        }
+
+        std::string finalLink = "<a href=\"" + link + "\">" + text + "</a>";
+
+        printf("Processing link: %s", finalLink.c_str());
+        markdown.replace(match_begin, match.length(), finalLink);
+    }
 
     ////////////////////////// OTHER TOKENS ////////////////////////////////////
     //token{"[^\\r\\n]+((\\r|\\n|\\r\\n)[^\\r\\n]+)*",0,2,  "p"}       // Paragraphs regex
@@ -76,7 +114,8 @@ std::string markdown(std::string markdown){
     ////////////////////////////// LINE BREAKS ///////////////////////////////////
     for(int i = 0; i<markdown.length(); i++){
         if(markdown[i] == '\n'){
-            markdown.replace(i, 1, "<br/>");
+            markdown.insert(i, "<br/>");
+            i+=6;
         }
     }
 
