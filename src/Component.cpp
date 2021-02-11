@@ -26,7 +26,10 @@ void Component::setText(std::string text){
 }
 
 std::string Component::render(){
-    std::string tmp = "<" + this->type + ">\n";   // Open the tag
+    std::string tmp = ""; 
+    
+    if(!type.empty())                       // If the component has a tag assigned,
+        tmp += "<" + this->type + ">\n";    // open the tag
 
     if(this->content.after == NULL && !this->content.text.empty())     // If the text's "after" is NULL, it means that the text should be rendered first
         tmp += this->content.text + "\n";
@@ -39,7 +42,8 @@ std::string Component::render(){
         }
     }
     
-    tmp += "</" + this->type + ">\n";     // And close the tag
+    if(!type.empty())                       // If the component has a tag assigned,
+        tmp += "</" + this->type + ">\n";    // close the tag
 
     return tmp;
 }
