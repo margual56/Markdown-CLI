@@ -15,6 +15,11 @@ __this is bold__
 
 `this is code` and `this is code too`
 
+```
+This is a multiline code
+thingy
+```
+
 > And this is a quote
 From my friend inoricat
 

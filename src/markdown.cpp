@@ -13,7 +13,7 @@ struct token {
     std::string rex;    // Regex to find the markdown token
     int length1;        // Length of the first token ("**" = 2, "*" = 1)
     int length2;        // Length of the last token (quotes only have at the beginning, newlines at the end, etc)
-    std::string tag;    // Equivalent tag
+    std::string tagOpen, tagClose;    // Equivalent tag
 };
 
 std::string markdown(std::string markdown){
@@ -79,15 +79,17 @@ std::string markdown(std::string markdown){
     //token{"[^\\r\\n]+((\\r|\\n|\\r\\n)[^\\r\\n]+)*",0,2,  "p"}       // Paragraphs regex
 
     std::list<token> tokens = {
-        token{"`[^`\\n]+`",                             1,1,  "code"},   // Code tag regex
-        token{"(\\*){2}[^(\\*){2}\\r\\n]+(\\*){2}",     2,2,  "b"},      // Bold tag regex    (**)
-        token{"(_){2}[^(_){2}\\r\\n]+(_){2}",           2,2,  "b"},      // Bold tag regex    (__)
-        token{"\\*[^\\*\\r\\n]+\\*",                    1,1,  "i"},      // Italic tag regex  (*)
-        token{"_[^\\*\\r\\n]+_",                        1,1,  "i"}      // Italic tag regex  (_)
+        token{"`[^`\\n]+`",                             1,1,  "<code>",         "</code>"},         // Code tag regex
+        token{"(\\*){2}[^(\\*){2}\\r\\n]+(\\*){2}",     2,2,  "<b>",            "</b>"},            // Bold tag regex    (**)
+        token{"(_){2}[^(_){2}\\r\\n]+(_){2}",           2,2,  "<b>",            "</b>"},            // Bold tag regex    (__)
+        token{"\\*[^\\*\\r\\n]+\\*",                    1,1,  "<i>",            "</i>"},            // Italic tag regex  (*)
+        token{"_[^\\*\\r\\n]+_",                        1,1,  "<i>",            "</i>"},            // Italic tag regex  (_)
+        token{"```[a-z]*\\n[\\s\\S]*?\\n```",           3,3,  "<pre><code>",    "</code></pre>"}    // Multiline code block
+        //token{"(^>.*?\n{2})",                           1,0,  "<quote>",        "</quote>"}         // Quote tag regex
     };
 
     for(token tok: tokens){
-        printf("Checking for %s\n", tok.tag.c_str());
+        printf("Checking for %s\n", tok.tagOpen.c_str());
         std::regex tmp(tok.rex);
         
         int match_end, match_begin;
@@ -97,11 +99,11 @@ std::string markdown(std::string markdown){
 
             printf("Processing match: %s\n", markdown.substr(match_begin, match.length()).c_str());
 
-            markdown.replace(match_end-tok.length2, tok.length2, "</" + tok.tag + ">");
-            markdown.replace(match_begin, tok.length1, "<" + tok.tag + ">");
+            markdown.replace(match_end-tok.length2, tok.length2, tok.tagClose);
+            markdown.replace(match_begin,           tok.length1, tok.tagOpen);
         }
 
-        printf("Done checking %s\n", tok.tag.c_str());
+        printf("Done checking %s\n", tok.tagOpen.c_str());
     }
 
     ////////////////////////////// LINE BREAKS ///////////////////////////////////
