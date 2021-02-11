@@ -13,7 +13,7 @@ _this is italic_
 **this is bold**
 __this is bold__
 
-`this is code`
+`this is code` and `this is code too`
 
 > And this is a quote
 From my friend inoricat

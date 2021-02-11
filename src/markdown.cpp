@@ -83,8 +83,7 @@ std::string markdown(std::string markdown){
         token{"(\\*){2}[^(\\*){2}\\r\\n]+(\\*){2}",     2,2,  "b"},      // Bold tag regex    (**)
         token{"(_){2}[^(_){2}\\r\\n]+(_){2}",           2,2,  "b"},      // Bold tag regex    (__)
         token{"\\*[^\\*\\r\\n]+\\*",                    1,1,  "i"},      // Italic tag regex  (*)
-        token{"_[^\\*\\r\\n]+_",                        1,1,  "i"},      // Italic tag regex  (_)
-        token{"> [^\\r\\n]+(\\r|\\n|\\r\\n){2}",        2,0,  "quote"}   // Block quote
+        token{"_[^\\*\\r\\n]+_",                        1,1,  "i"}      // Italic tag regex  (_)
     };
 
     for(token tok: tokens){
@@ -98,14 +97,8 @@ std::string markdown(std::string markdown){
 
             printf("Processing match: %s\n", markdown.substr(match_begin, match.length()).c_str());
 
-            //printf("Replacing '%s' by '%s'\n", markdown->substr(match_end, tok.length).c_str(), ("</" + tok.tag + ">").c_str());
             markdown.replace(match_end-tok.length2, tok.length2, "</" + tok.tag + ">");
-
-            //printf("Replacing '%s' by '%s'\n", markdown->substr(match_begin, tok.length).c_str(), ("<" + tok.tag + ">").c_str());
             markdown.replace(match_begin, tok.length1, "<" + tok.tag + ">");
-
-
-            // std::cout << line.substr(match_begin+1, match_end-1) << std::endl; // Debug, print all the code matches
         }
 
         printf("Done checking %s\n", tok.tag.c_str());
